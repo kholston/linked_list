@@ -1,5 +1,4 @@
 require_relative 'node'
-
 class LinkedList
 
   def initialize(head = nil, tail = nil)
@@ -21,9 +20,15 @@ class LinkedList
   # Adds a new node containing value to the end of list
   def append(value)
     created_node = Node.new(value)
-    @tail.next_node = created_node
-    @tail = created_node
-    @total_nodes += 1
+    if @head.nil? && @tail.nil?
+      @head = created_node
+      @tail = created_node
+      @total_nodes += 1
+      return
+    end
+      @tail.next_node = created_node
+      @tail = created_node
+      @total_nodes += 1
   end
 
   # Adds a new node containing value to the start of the list
@@ -71,6 +76,7 @@ class LinkedList
       current_node = current_node.next_node  
     end
     previous_node.next_node = nil
+    @total_nodes -= 1
     current_node
   end
 
@@ -79,11 +85,11 @@ class LinkedList
   def contains(value)
     contains_value = false
     current_node = @head
-    while current_node.next_node
+    while current_node
       if current_node.value == value
         return contains_value = true
       else
-        current_node = current_node.next
+        current_node = current_node.next_node
       end
     end
     contains_value
@@ -92,15 +98,15 @@ class LinkedList
   # Returns the index of the node containing value
   # or nil if not found
   def find(value)
-    return nil unless contains(value)
+    if contains(value)
+      current_index = 0
+      current_node = @head
+      while current_node
+        return current_index if current_node.value == value
 
-    current_index = 0
-    current_node = @head
-    while current_node.next_node
-      return current_index if current_node.value == value
-
-      current_node = current_node.next_node
-      current_index += 1
+        current_node = current_node.next_node
+        current_index += 1
+      end
     end
     nil
   end
@@ -110,7 +116,7 @@ class LinkedList
   def to_s
     result = " "
     current_node = @head
-    while current_node.next_node
+    while current_node
       result += "( #{current_node.value} ) -> "
       current_node = current_node.next_node
     end
